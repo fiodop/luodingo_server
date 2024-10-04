@@ -32,8 +32,11 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
-
-        appUserService.create(user);
+        try {
+            appUserService.create(user);
+        } catch (RuntimeException e){
+            throw new RuntimeException("User with this username exist");
+        }
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);

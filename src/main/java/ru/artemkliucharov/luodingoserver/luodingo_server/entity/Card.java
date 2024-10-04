@@ -18,7 +18,10 @@ public class Card {
     private String word;
     private String translation;
     @ManyToOne
-    private AppUser appUser;
+    private Deck deck;
 
-
+    public Card(String word, String translation){
+        this.word = word;
+        this.translation = translation;
+    }
 }
