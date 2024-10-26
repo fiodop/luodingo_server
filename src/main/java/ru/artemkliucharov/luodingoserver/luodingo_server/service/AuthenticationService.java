@@ -10,6 +10,7 @@ import ru.artemkliucharov.luodingoserver.luodingo_server.DTO.JwtAuthenticationRe
 import ru.artemkliucharov.luodingoserver.luodingo_server.DTO.SignInRequest;
 import ru.artemkliucharov.luodingoserver.luodingo_server.DTO.SignUpRequest;
 import ru.artemkliucharov.luodingoserver.luodingo_server.entity.AppUser;
+import ru.artemkliucharov.luodingoserver.luodingo_server.exeption.UserNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,31 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
 
+    /**
+     * Authorize user by token
+     * @param header authorization header with token
+     * @return AppUser.class object from db
+     * @throws UserNotFoundException
+     */
+    public AppUser authenticate(String header){
+        if(!header.startsWith("Bearer ") || header == null){
+            throw new RuntimeException("Unauthorized");
+        }
+        var token = header.substring(7);
+        try{
+            var username = jwtService.extractUsername(token);
+            AppUser appUser = appUserService.getByUsername(username);
+
+            if(appUser != null){
+                return  appUser;
+            } else {
+                throw new UserNotFoundException("User with username " + username + " not found");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException("Unauthorized");
+        }
+    }
     /**
      * Registration user
      *

@@ -20,15 +20,27 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final ObjectMapper objectMapper;
 
+    /**
+     *
+     * @param request SignUpRequest.class
+     * @return token, if throw exception return HttpStatus. FORBIDDEN
+     */
     @PostMapping("/sign-up")
-    public ResponseEntity<Object> signUp(@RequestBody SignUpRequest request){
+    public ResponseEntity<Object> signUp(@RequestBody SignUpRequest request) throws JsonProcessingException {
 
         try {
             return ResponseEntity.ok(authenticationService.signUp(request));
         } catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{'error': 'User with this username exist'}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(objectMapper.writeValueAsString(e.fillInStackTrace()));
         }
     }
+
+    /**
+     *
+     * @param request SignInRequest.class
+     * @return  token
+     * @throws JsonProcessingException
+     */
     @GetMapping("/sign-in")
     public ResponseEntity<Object> signIn(@RequestBody SignInRequest request) throws JsonProcessingException {
         try {

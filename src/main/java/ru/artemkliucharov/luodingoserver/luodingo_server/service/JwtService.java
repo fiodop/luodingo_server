@@ -7,16 +7,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.artemkliucharov.luodingoserver.luodingo_server.entity.AppUser;
-import ru.artemkliucharov.luodingoserver.luodingo_server.exeption.UserNotFoundExeption;
 
 import java.security.Key;
 import java.util.Date;
@@ -30,33 +25,6 @@ import java.util.function.Function;
 public class JwtService {
     @Value("${token.signing.key}")
     private String jwtSigningKey;
-    private final AppUserService appUserService;
-
-    /**
-     * Authorize user by token
-     * @param header authorization header with token
-     * @return AppUser.class object from db
-     * @throws UserNotFoundExeption
-     */
-    public AppUser authorize(String header){
-        if(!header.startsWith("Bearer ") || header == null){
-            throw new RuntimeException("Unauthorized");
-        }
-        var token = header.substring(7);
-        try{
-            var username = extractUsername(token);
-            AppUser appUser = appUserService.getByUsername(username);
-
-            if(appUser != null){
-                return  appUser;
-            } else {
-                throw new UserNotFoundExeption("User with username " + username + " not found");
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-            throw new RuntimeException("Unauthorized");
-        }
-    }
 
     /**
      * Extract username from token

@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 @Entity
@@ -24,6 +25,8 @@ public class AppUser implements UserDetails {
     private String username;
     @Column(nullable = false)
     private String password;
+    @ManyToOne
+    private Deck deck;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

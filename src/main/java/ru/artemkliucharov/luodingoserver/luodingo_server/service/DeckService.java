@@ -1,9 +1,9 @@
 package ru.artemkliucharov.luodingoserver.luodingo_server.service;
 
-import jakarta.persistence.Access;
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.artemkliucharov.luodingoserver.luodingo_server.entity.Card;
+import ru.artemkliucharov.luodingoserver.luodingo_server.entity.AppUser;
 import ru.artemkliucharov.luodingoserver.luodingo_server.entity.Deck;
 import ru.artemkliucharov.luodingoserver.luodingo_server.repository.DeckRepository;
 
@@ -18,9 +18,12 @@ public class DeckService {
         deckRepository.save(deck);
     }
 
-    public void delete(Deck deck){
-        deckRepository.delete(deck);
+    public void deleteByName(String deckName){
+        deckRepository.deleteByName(deckName);
     }
 
 
+    public ArrayList<Deck> getAllDecksByAppUser(AppUser appUser) {
+        return deckRepository.getAllByAppUser(appUser);
+    }
 }
